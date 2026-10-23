@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Button System: consistent buttons for every page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--alt:#f3f5fb;--ink:#0f1830;--muted:#56607a;--line:#dde2ef;--panel:#ffffff;--code:#0c1226;--codeink:#d6dcf5;--navbg:rgba(255,255,255,.92);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0b1020;--alt:#11172c;--ink:#eef1fb;--muted:#9aa3c0;--line:#27304f;--panel:#161c33;--code:#070a15;--navbg:rgba(11,16,32,.92)}
+}
+:root[data-theme="dark"]{--bg:#0b1020;--alt:#11172c;--ink:#eef1fb;--muted:#9aa3c0;--line:#27304f;--panel:#161c33;--code:#070a15;--navbg:rgba(11,16,32,.92)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 4.5rem)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.65 Figtree,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--navbg);z-index:30}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:0;letter-spacing:-.02em}
+h1{font-weight:800;font-size:clamp(2.5rem,6vw,4.4rem);line-height:1.02;max-width:13ch}
+h2{font-weight:800;font-size:clamp(1.8rem,3.6vw,2.5rem);line-height:1.1;margin-bottom:.75rem}
+h3{font-weight:600;font-size:1.2rem;line-height:1.25;margin-bottom:.4rem}
+p{margin:0 0 1rem;max-width:58ch}
+.muted{color:var(--muted)}
+.wrap{max-width:70rem;margin:0 auto;padding:0 1.25rem}
+section{padding:4.5rem 0}
+.alt{background:var(--alt)}
+a{color:inherit}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navbg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;height:4rem}
+.brand{font:800 1.2rem "Bricolage Grotesque",system-ui,sans-serif;text-decoration:none;display:flex;align-items:center;gap:.55rem}
+.mark{width:1.6rem;height:1.6rem;border-radius:7px;background:#2f4bff;display:inline-block;position:relative}
+.mark::after{content:"";position:absolute;left:.3rem;right:.3rem;top:.62rem;height:.36rem;border-radius:3px;background:#fff}
+.links{display:flex;align-items:center;gap:1.4rem}
+.links a.l{text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem}
+.links a.l:hover{color:var(--ink)}
+@media (max-width:46rem){.links a.l{display:none}}
+
+/* hero */
+.hero{padding:4.5rem 0 5rem}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:3rem;align-items:center}
+@media (max-width:52rem){.hero .wrap{grid-template-columns:1fr}}
+.hero p.lede{font-size:1.2rem;color:var(--muted);margin:1.3rem 0 1.8rem}
+.cta{display:flex;flex-wrap:wrap;gap:.75rem}
+.specimen{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:1.6rem;box-shadow:0 18px 40px -22px rgba(15,24,48,.35)}
+.specimen .row{margin:0 0 1rem}
+.specimen .row:last-child{margin:0}
+.specimen .cap{font-size:.9rem;color:var(--muted);margin:0 0 .5rem}
+
+/* principles */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+@media (max-width:52rem){.three{grid-template-columns:1fr;gap:1.5rem}}
+.three>div{border-top:2px solid var(--ink);padding-top:1rem}
+.three p{color:var(--muted);margin:0}
+
+/* playground */
+.pg{display:grid;grid-template-columns:17rem 1fr;gap:1.25rem;margin-top:2rem}
+@media (max-width:52rem){.pg{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.4rem}
+.controls label{display:block;font-weight:600;font-size:.95rem;margin:1.1rem 0 .4rem}
+.controls label:first-of-type{margin-top:0}
+.controls output{color:var(--muted);font-weight:400;margin-left:.4rem}
+.controls input[type=color]{width:100%;height:2.6rem;border:1px solid var(--line);border-radius:8px;background:none;padding:2px;cursor:pointer}
+.controls input[type=range]{width:100%;accent-color:#2f4bff}
+.swatches{display:flex;gap:.5rem;margin-top:.7rem}
+.sw{width:2rem;height:2rem;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.sw:focus-visible{outline:3px solid #9fb0ff;outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin:.9rem 0 0}
+.stage h3{margin-top:1.5rem}
+.stage h3:first-child{margin-top:0}
+
+/* ===== button system ===== */
+.themed{--btn-bg:#2f4bff;--btn-bg-hover:#2339d6;--btn-text:#fff;--btn-radius:10px;--btn-focus:#9fb0ff;--btn-pad:1}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:calc(.65rem*var(--btn-pad)) calc(1.3rem*var(--btn-pad));
+  font:600 1rem/1.2 Figtree,system-ui,sans-serif;
+  color:var(--btn-text);background:var(--btn-bg);border:2px solid var(--btn-bg);border-radius:var(--btn-radius);
+  cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s,color .15s,transform .05s;
+}
+.btn:hover{background:var(--btn-bg-hover);border-color:var(--btn-bg-hover)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:3px solid var(--btn-focus);outline-offset:2px}
+.btn:disabled,.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed;transform:none}
+.btn--secondary{background:transparent;color:var(--btn-bg)}
+.btn--secondary:hover{background:var(--btn-bg);border-color:var(--btn-bg);color:var(--btn-text)}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--btn-bg)}
+.btn--ghost:hover{background:color-mix(in srgb,var(--btn-bg) 12%,transparent);border-color:transparent}
+.btn--danger{--btn-bg:#d92d3a;--btn-bg-hover:#b61f2b;--btn-focus:#f5a3a9}
+.btn--sm{padding:calc(.4rem*var(--btn-pad)) calc(.85rem*var(--btn-pad));font-size:.875rem}
+.btn--lg{padding:calc(.85rem*var(--btn-pad)) calc(1.8rem*var(--btn-pad));font-size:1.125rem}
+.btn--block{display:flex;width:100%}
+/* ===== end ===== */
+.btn.neutral{--btn-bg:var(--ink);--btn-bg-hover:var(--ink);--btn-text:var(--bg);--btn-focus:#9fb0ff}
+.btn.neutral.btn--secondary{color:var(--ink);--btn-text:var(--bg)}
+
+/* table */
+.tablewrap{overflow-x:auto;margin-top:2rem;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:38rem}
+th,td{text-align:left;padding:1rem 1.2rem;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+th{font-weight:600;color:var(--muted);font-size:.95rem}
+td code{font:.9rem ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--alt);padding:.15rem .4rem;border-radius:5px}
+
+/* code */
+.tabs{display:flex;gap:.5rem;margin-top:2rem;align-items:center;flex-wrap:wrap}
+.tab{font:600 .95rem Figtree,system-ui,sans-serif;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.4rem 1rem;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab:focus-visible{outline:3px solid #9fb0ff;outline-offset:2px}
+.tabs .spacer{flex:1}
+pre{margin:1rem 0 0;background:var(--code);color:var(--codeink);border-radius:12px;padding:1.2rem;overflow-x:auto;font:.85rem/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;max-height:28rem}
+
+/* a11y list */
+.list{margin:1.5rem 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem 3rem}
+@media (max-width:46rem){.list{grid-template-columns:1fr}}
+.list li{border-left:3px solid #2f4bff;padding-left:1rem}
+.list b{display:block;font-weight:600}
+.list span{color:var(--muted)}
+
+footer{border-top:1px solid var(--line);padding:2.5rem 0 3rem;color:var(--muted);font-size:.95rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" data-go="top"><span class="mark" aria-hidden="true"></span>Button System</a>
+    <nav class="links" aria-label="Sections">
+      <a class="l" href="#playground" data-go="playground">Playground</a>
+      <a class="l" href="#components" data-go="components">Components</a>
+      <a class="l" href="#usage" data-go="usage">Usage</a>
+      <a class="l" href="#accessibility" data-go="accessibility">Accessibility</a>
+      <button class="btn btn--secondary btn--sm neutral" id="theme" type="button">Theme</button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero themed">
+  <div class="wrap">
+    <div>
+      <h1>Buttons that look the same everywhere.</h1>
+      <p class="lede">One small stylesheet gives every button on your website the same shape, spacing, color and behavior. Add one class and you are done.</p>
+      <div class="cta">
+        <a class="btn btn--lg" href="#playground" data-go="playground">Try it live</a>
+        <a class="btn btn--lg btn--secondary" href="#usage" data-go="usage">Get the CSS</a>
+      </div>
+    </div>
+    <div class="specimen" aria-label="Example buttons">
+      <p class="cap">Primary and secondary</p>
+      <div class="row"><button class="btn" type="button">Save changes</button><button class="btn btn--secondary" type="button">Cancel</button></div>
+      <p class="cap">Sizes</p>
+      <div class="row"><button class="btn btn--sm" type="button">Small</button><button class="btn" type="button">Default</button><button class="btn btn--lg" type="button">Large</button></div>
+      <p class="cap">Destructive and disabled</p>
+      <div class="row"><button class="btn btn--danger" type="button">Delete</button><button class="btn" type="button" disabled>Unavailable</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="three">
+      <div><h3>One class to learn</h3><p>Every button uses <code>btn</code>. Variants and sizes are small add-ons, so nobody has to guess the naming.</p></div>
+      <div><h3>Change it in one place</h3><p>Color, roundness and spacing live in a few variables. Update them once and the whole site follows.</p></div>
+      <div><h3>Works on buttons and links</h3><p>Use it on <code>&lt;button&gt;</code>, <code>&lt;a&gt;</code> or form submit buttons and they all match.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="playground">
+  <div class="wrap">
+    <h2>Make it match your brand</h2>
+    <p class="muted">Pick a color, set the corner radius and choose the size. The preview and the CSS update as you go.</p>
+    <div class="pg">
+      <div class="panel controls">
+        <label for="color">Brand color <output id="colorOut">#2f4bff</output></label>
+        <input type="color" id="color" value="#2f4bff">
+        <div class="swatches" id="swatches" role="group" aria-label="Preset colors"></div>
+        <label for="radius">Corner radius <output id="radiusOut">10px</output></label>
+        <input type="range" id="radius" min="0" max="999" value="10" aria-label="Corner radius">
+        <label for="density">Size <output id="densityOut">100%</output></label>
+        <input type="range" id="density" min="80" max="130" value="100" step="5">
+      </div>
+      <div class="panel stage themed" id="stage">
+        <h3>Variants</h3>
+        <div class="row">
+          <button class="btn" type="button">Save changes</button>
+          <button class="btn btn--secondary" type="button">Cancel</button>
+          <button class="btn btn--ghost" type="button">Learn more</button>
+          <button class="btn btn--danger" type="button">Delete account</button>
+        </div>
+        <h3>Sizes</h3>
+        <div class="row">
+          <button class="btn btn--sm" type="button">Small</button>
+          <button class="btn" type="button">Default</button>
+          <button class="btn btn--lg" type="button">Large</button>
+        </div>
+        <h3>Full width and disabled</h3>
+        <div class="row"><button class="btn btn--block btn--lg" type="button">Create your account</button></div>
+        <div class="row"><button class="btn" type="button" disabled>Disabled</button><a href="#playground" class="btn btn--secondary" onclick="return false">Link as button</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="components">
+  <div class="wrap">
+    <h2>Choose the right button</h2>
+    <p class="muted">Use one primary button per screen. Everything else should be quieter.</p>
+    <div class="tablewrap themed">
+      <table>
+        <thead><tr><th scope="col">Button</th><th scope="col">Class</th><th scope="col">Use it for</th></tr></thead>
+        <tbody>
+          <tr><td><button class="btn btn--sm" type="button">Save</button></td><td><code>btn</code></td><td>The main action on a screen, such as Save, Buy or Sign up.</td></tr>
+          <tr><td><button class="btn btn--secondary btn--sm" type="button">Cancel</button></td><td><code>btn btn--secondary</code></td><td>A second choice next to the main action.</td></tr>
+          <tr><td><button class="btn btn--ghost btn--sm" type="button">Learn more</button></td><td><code>btn btn--ghost</code></td><td>Low-key actions inside text, toolbars or cards.</td></tr>
+          <tr><td><button class="btn btn--danger btn--sm" type="button">Delete</button></td><td><code>btn btn--danger</code></td><td>Actions that remove data or cannot be undone.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="usage">
+  <div class="wrap">
+    <h2>Add it to your site</h2>
+    <p class="muted">Copy the CSS into your stylesheet, then use the HTML below. The CSS tab matches the color, radius and size you chose above.</p>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="t-css" aria-selected="true" aria-controls="css" type="button">CSS</button>
+      <button class="tab" role="tab" id="t-html" aria-selected="false" aria-controls="html" type="button">HTML</button>
+      <span class="spacer"></span>
+      <button class="btn btn--sm neutral" id="copy" type="button">Copy code</button>
+    </div>
+    <pre id="css" role="tabpanel" aria-labelledby="t-css"></pre>
+    <pre id="html" role="tabpanel" aria-labelledby="t-html" hidden>&lt;button class="btn"&gt;Save changes&lt;/button&gt;
+&lt;button class="btn btn--secondary"&gt;Cancel&lt;/button&gt;
+&lt;button class="btn btn--ghost"&gt;Learn more&lt;/button&gt;
+&lt;button class="btn btn--danger btn--sm"&gt;Delete&lt;/button&gt;
+&lt;a href="/signup" class="btn btn--lg"&gt;Sign up&lt;/a&gt;
+&lt;button class="btn" disabled&gt;Unavailable&lt;/button&gt;</pre>
+  </div>
+</section>
+
+<section class="alt" id="accessibility">
+  <div class="wrap">
+    <h2>Built to be used by everyone</h2>
+    <ul class="list">
+      <li><b>Visible keyboard focus</b><span>Pressing Tab shows a clear ring around the active button.</span></li>
+      <li><b>Readable text color</b><span>Button text switches between white and dark to stay legible on your brand color.</span></li>
+      <li><b>Clear disabled state</b><span>Disabled buttons are faded and show a blocked cursor, and they cannot be clicked.</span></li>
+      <li><b>Respects motion settings</b><span>Animations turn off for visitors who ask their device to reduce motion.</span></li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>Button System. Free to copy and use on any website.</span><span>Light and dark mode supported.</span></div></footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var stage=$('stage'),color=$('color'),radius=$('radius'),density=$('density');
+  var presets=['#2f4bff','#0f8a6a','#7b3fe4','#e0542a','#141a2e'];
+  function hx(c){return Math.max(0,Math.min(255,Math.round(c))).toString(16).padStart(2,'0')}
+  function rgb(h){var n=parseInt(h.slice(1),16);return[n>>16,(n>>8)&255,n&255]}
+  function shade(h,a){var r=rgb(h);return'#'+r.map(function(c){return hx(c*(1-a))}).join('')}
+  function tint(h){var r=rgb(h);return'#'+r.map(function(c){return hx(c+(255-c)*.55)}).join('')}
+  function lum(h){var r=rgb(h);return(.299*r[0]+.587*r[1]+.114*r[2])/255}
+  function build(){
+    var c=color.value,r=+radius.value,d=+density.value/100;
+    var hov=shade(c,.18),txt=lum(c)>.72?'#141a2e':'#ffffff',foc=tint(c);
+    var s=stage.style;
+    s.setProperty('--btn-bg',c);s.setProperty('--btn-bg-hover',hov);s.setProperty('--btn-text',txt);
+    s.setProperty('--btn-focus',foc);s.setProperty('--btn-radius',r+'px');s.setProperty('--btn-pad',d);
+    $('colorOut').textContent=c;$('radiusOut').textContent=r>=100?'pill':r+'px';$('densityOut').textContent=Math.round(d*100)+'%';
+    function p(a,b){return (a*d).toFixed(2)+'rem '+(b*d).toFixed(2)+'rem'}
+    $('css').textContent=
+':root {\n  --btn-bg: '+c+';\n  --btn-bg-hover: '+hov+';\n  --btn-text: '+txt+';\n  --btn-radius: '+r+'px;\n  --btn-focus: '+foc+';\n}\n\n'+
+'.btn {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 0.5rem;\n  padding: '+p(.65,1.3)+';\n  font: 600 1rem/1.2 system-ui, sans-serif;\n  color: var(--btn-text);\n  background: var(--btn-bg);\n  border: 2px solid var(--btn-bg);\n  border-radius: var(--btn-radius);\n  cursor: pointer;\n  text-decoration: none;\n  transition: background .15s, border-color .15s, color .15s, transform .05s;\n}\n'+
+'.btn:hover { background: var(--btn-bg-hover); border-color: var(--btn-bg-hover); }\n.btn:active { transform: translateY(1px); }\n.btn:focus-visible { outline: 3px solid var(--btn-focus); outline-offset: 2px; }\n.btn:disabled, .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }\n\n'+
+'/* Variants */\n.btn--secondary { background: transparent; color: var(--btn-bg); }\n.btn--secondary:hover { background: var(--btn-bg); color: var(--btn-text); }\n.btn--ghost { background: transparent; border-color: transparent; color: var(--btn-bg); }\n.btn--ghost:hover { background: color-mix(in srgb, var(--btn-bg) 12%, transparent); }\n.btn--danger { --btn-bg: #d92d3a; --btn-bg-hover: #b61f2b; --btn-focus: #f5a3a9; }\n\n'+
+'/* Sizes */\n.btn--sm { padding: '+p(.4,.85)+'; font-size: .875rem; }\n.btn--lg { padding: '+p(.85,1.8)+'; font-size: 1.125rem; }\n.btn--block { display: flex; width: 100%; }\n';
+  }
+  presets.forEach(function(c){
+    var b=document.createElement('button');b.type='button';b.className='sw';b.style.background=c;
+    b.setAttribute('aria-label','Use '+c);b.onclick=function(){color.value=c;build()};$('swatches').appendChild(b);
+  });
+  [color,radius,density].forEach(function(e){e.addEventListener('input',build)});
+
+  var tc=$('t-css'),th=$('t-html'),cssE=$('css'),htmlE=$('html');
+  function tab(showCss){
+    tc.setAttribute('aria-selected',showCss);th.setAttribute('aria-selected',!showCss);
+    cssE.hidden=!showCss;htmlE.hidden=showCss;
+  }
+  tc.onclick=function(){tab(true)};th.onclick=function(){tab(false)};
+
+  $('copy').onclick=function(){
+    var btn=this,el=cssE.hidden?htmlE:cssE;
+    function done(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy code'},1500)}
+    function fb(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Selected, press Ctrl+C';setTimeout(function(){btn.textContent='Copy code'},2200)}
+    try{navigator.clipboard.writeText(el.textContent).then(done,fb)}catch(e){fb()}
+  };
+
+  $('theme').onclick=function(){
+    var root=document.documentElement,a=root.getAttribute('data-theme');
+    var dark=a?a==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme',dark?'light':'dark');
+  };
+
+  document.querySelectorAll('[data-go]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();var t=$(a.getAttribute('data-go'));
+      if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    });
+  });
+  build();
+})();
+</script>
+</body>
+</html>
